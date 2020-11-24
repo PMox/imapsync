@@ -1,0 +1,44 @@
+#!/bin/cat
+$Id: FAQ.SmarterMail.txt,v 1.14 2019/10/15 14:57:19 gilles Exp gilles $
+
+This document is also available online at
+https://imapsync.lamiral.info/FAQ.d/
+https://imapsync.lamiral.info/FAQ.d/FAQ.SmarterMail.txt
+
+
+=======================================================================
+    Imapsync tips for SmarterMail. Specific issues and solutions.
+=======================================================================
+
+
+=======================================================================
+Q. Synchronizing from SmarterMail to XXX
+
+On Unix:
+imapsync --host1 imap.d1.org --user1 joe --password1 secret1 \
+         --host2 imap.d2.org --user2 joe --password2 secret2 \
+         --sep1 "/" --prefix1 "" --useheader Message-Id --noabletosearch
+
+On Windows:
+imapsync.exe --host1 imap.d1.org --user1 joe --password1 secret1 ^
+         --host2 imap.d2.org --user2 joe --password2 secret2  ^
+         --sep1 "/" --prefix1 "" --useheader Message-Id --noabletosearch
+
+
+=======================================================================
+Q. Synchronizing from XXX to SmarterMail
+
+On Unix:
+imapsync --host1 imap.d1.org --user1 joe --password1 secret1  \
+         --host2 imap.d2.org --user2 joe --password2 secret2  \
+         --sep2 "/" --prefix2 "" --useheader Message-Id --noabletosearch
+
+On Windows:
+imapsync.exe --host1 imap.d1.org --user1 joe --password1 secret1 ^
+             --host2 imap.d2.org --user2 joe --password2 secret2 ^
+             --sep2 "/" --prefix2 "" --useheader Message-Id --noabletosearch
+
+
+=======================================================================
+=======================================================================
+

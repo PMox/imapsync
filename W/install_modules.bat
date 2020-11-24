@@ -1,48 +1,116 @@
+REM $Id: install_modules.bat,v 1.39 2019/12/11 18:56:54 gilles Exp gilles $
 
-REM $Id: install_modules.bat,v 1.17 2015/05/23 09:40:38 gilles Exp gilles $
+::------------------------------------------------------
+::--------------- Main of install_modules.bat ----------
+@SETLOCAL
+@ECHO OFF
+ECHO Currently running through %0 %*
 
-@ECHO OFF 
-
+@REM Needed with remote ssh
+SET SHELL=
+SET
 ECHO Installing Perl modules for imapsync
-REM CD /D %~dp0
 
+CD /D %~dp0
+
+CALL :handle_error CALL :detect_perl
+CALL :handle_error CALL :update_modules
+
+@REM Do a PAUSE if run by double-click, aka, explorer (then ). No PAUSE in a DOS window or via ssh.
+IF %0 EQU "%~dpnx0" IF "%SSH_CLIENT%"=="" PAUSE
+@ENDLOCAL
+EXIT /B
+
+
+::------------------------------------------------------
+
+
+::------------------------------------------------------
+::--------------- Detect Perl --------------------------
+:detect_perl
+@SETLOCAL
 perl -v
 IF ERRORLEVEL 1 ECHO Perl needed. Install Strawberry Perl. Get it at http://strawberryperl.com/ ^
-  && EXIT /B
+  && PAUSE && EXIT 3
+ECHO perl is there
+@ENDLOCAL
+EXIT /B
+::------------------------------------------------------
 
-REM perl is there
 
+::------------------------------------------------------
+::---------------- Update modules ----------------------
+:update_modules
+@SETLOCAL
 FOR %%M in ( ^
-             Authen::NTLM ^
-             Crypt::SSLeay ^
-             Data::Uniqid ^
-             Digest::HMAC_MD5 ^
-             Digest::HMAC_SHA1 ^
-             Digest::MD5 ^
-             File::Copy::Recursive ^
-             Getopt::ArgvFile ^
-             IO::Socket::INET ^
-             IO::Socket::INET6 ^
-             IO::Socket::SSL ^
-             IO::Tee ^
-             Mail::IMAPClient ^
-             Module::ScanDeps ^
-             Net::SSL ^
-             Net::SSLeay ^
-             PAR::Packer ^
-             Test::Pod ^
-             Unicode::String ^
-             URI::Escape ^
-	JSON::WebToken ^
-	LWP ^
-	HTML::Entities ^
-	JSON ^
-             ) DO ECHO Updating %%M ^
-   & perl -MCPAN -e "install %%M"
+ App::cpanminus ^
+ MIME::Base64 ^
+ Encode ^
+ Encode::IMAPUTF7 ^
+ File::Tail ^
+ Regexp::Common ^
+ Sys::MemInfo ^
+ Test::MockObject ^
+ Readonly ^
+ Authen::NTLM ^
+ Crypt::SSLeay ^
+ Data::Uniqid ^
+ Digest::HMAC_MD5 ^
+ Digest::HMAC_SHA1 ^
+ Digest::MD5 ^
+ File::Copy::Recursive ^
+ Getopt::ArgvFile ^
+ Socket6 ^
+ Net::SSLeay ^
+ IO::Socket::IP ^
+ IO::Socket::INET ^
+ IO::Socket::INET6 ^
+ IO::Socket::SSL ^
+ IO::Tee ^
+ Mail::IMAPClient ^
+ Module::ScanDeps ^
+ Net::SSL ^
+ PAR::Packer ^
+ Pod::Usage ^
+ Test::Pod ^
+ Unicode::String ^
+ URI::Escape ^
+ Crypt::OpenSSL::RSA ^
+ JSON ^
+ JSON::WebToken ^
+ LWP ^
+ HTML::Entities ^
+ Encode::Byte ^
+ ) DO @perl -m%%M -e "print qq{Updating %%M $%%M::VERSION \n}" ^
+   & ECHO DOING cpanm %%M & cpanm %%M & ECHO DONE cpanm %%M 
 
-REM   & perl -m%%M -e "" || perl -MCPAN -e "install %%M"
-
-ECHO Perl modules for imapsync installed
+ECHO Perl modules for imapsync updated
 REM PAUSE
+@REM @ECHO Net::SSLeay not updated
 
+@ENDLOCAL
+EXIT /B
+
+
+::------------------------------------------------------
+
+
+::------------------------------------------------------
+::----------- Handle errors in LOG_bat\ directory ------
+:handle_error
+SETLOCAL
+ECHO IN %0 with parameters %*
+%*
+SET CMD_RETURN=%ERRORLEVEL%
+
+IF %CMD_RETURN% EQU 0 (
+        ECHO GOOD END
+) ELSE (
+        ECHO BAD END
+        IF NOT EXIST LOG_bat MKDIR LOG_bat
+        ECHO Failure calling with extra %* >> LOG_bat\%~nx0.txt
+)
+ENDLOCAL
+EXIT /B
+::------------------------------------------------------
 

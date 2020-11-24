@@ -1,12 +1,26 @@
 #!/bin/cat
-$Id: FAQ.Dovecot.txt,v 1.1 2015/03/23 00:16:43 gilles Exp gilles $
+$Id: FAQ.Dovecot.txt,v 1.7 2019/09/25 09:25:52 gilles Exp gilles $
+
+This documentation is also available online at
+https://imapsync.lamiral.info/FAQ.d/
+https://imapsync.lamiral.info/FAQ.d/FAQ.Dovecot.txt
+
 
 =======================================================================
-      Dovecot specific issues and solutions
+      Imapsync tips for Dovecot. Specific issues and solutions.
 =======================================================================
 
 
-======================================================================
+Questions answered in this FAQ are:
+
+Q. Subfolders are not created by imapsync and the error is
+   "Mailbox doesn't allow inferior mailboxes"
+
+Q. How to migrate to Dovecot with an admin/MasterUser account?
+
+Now the questions again with their answers.
+
+=======================================================================
 Q. How to migrate to Dovecot with an admin/MasterUser account?
 
 R. Dovecot uses the same syntax as uw-imap
@@ -16,4 +30,23 @@ R. Dovecot uses the same syntax as uw-imap
 To setup a Dovecot MasterUser see 
 http://wiki2.dovecot.org/Authentication/MasterUsers
 
-======================================================================
+=======================================================================
+Q. Subfolders are not created by imapsync and the error is
+   "Mailbox doesn't allow inferior mailboxes"
+
+R. Dovecot usually supports subfolders with messages and subfolders,
+   it's a Dovecot configuration issue.
+
+If you can change the Dovecot configuration dovecot.conf, 
+then try this:
+
+mail_location = maildir:~/Maildir:LAYOUT=fs
+
+See details at:
+https://superuser.com/questions/813362/sub-folders-in-dovecot
+https://wiki2.dovecot.org/MailLocation/Maildir
+
+
+
+=======================================================================
+=======================================================================
